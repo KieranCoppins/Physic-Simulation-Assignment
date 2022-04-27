@@ -160,11 +160,11 @@ namespace PhysicsEngine
 
 		*/
 
-		platform1 = new Platform (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(PxIdentity)), PxVec3 (5.f, 0.1f, 5.f));
+		platform1 = new Platform (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(PxIdentity)), PxVec3 (10.f, 0.1f, 10.f));
 		platform1->Material (GetMaterial (Materials::METAL));
 		Add (platform1);
 
-		Platform* platform2 = new Platform (PxTransform (PxVec3 (10.f, 0.f, 0.f), PxQuat (PxIdentity)), PxVec3 (5.f, 0.1f, 5.f));
+		Platform* platform2 = new Platform (PxTransform (PxVec3 (20.f, 0.f, 0.f), PxQuat (PxIdentity)), PxVec3 (10.f, 0.1f, 10.f));
 		platform2->Material (GetMaterial (Materials::ICE));
 		Add (platform2);
 
@@ -179,7 +179,7 @@ namespace PhysicsEngine
 										 PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f)));
 
 		PxTransform lastPoint = Line (20, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
-		lastPoint = Line (20, PxVec3 (.5f, 0.f, -.5f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = Line (20, PxVec3 (.5f, 0.f, .5f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 		lastPoint = Line (20, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3(1.f, 0.f, 0.f));
 
 
@@ -250,7 +250,10 @@ namespace PhysicsEngine
 		for (int i = 0; i < length; i++) {
 			pose = start;
 			pose.p += (((i + 1) * spacing) * direction);
-			pose.q *= PxQuat (PxVec3 (1.f, 0.f, 0.f).dot (direction) * (PxPi / 2), PxVec3 (1.f, 0.f, 0.f));
+			float angle = PxVec3 (1.f, 0.f, 0.f).dot (direction) * (PxPi / 2);
+			if (direction.z < 0)
+				angle *= -1;
+			pose.q *= PxQuat (angle, PxVec3 (1.f, 0.f, 0.f));
 			Domino* d = new Domino (pose);
 			d->Color (colour);
 			dominoes.push_back (d);
