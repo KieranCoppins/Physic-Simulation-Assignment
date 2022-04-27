@@ -218,7 +218,7 @@ namespace PhysicsEngine
 
 	Platform::Platform (const PxTransform& pose, PxVec3 dimensions) : StaticActor (pose)
 	{
-		CreateShape (PxBoxGeometry (dimensions));
+		CreateShape (PxBoxGeometry (dimensions), 1.f);
 	}
 
 	Domino::Domino (const PxTransform& pose, PxVec3 dimensions, PxReal density)
@@ -232,7 +232,8 @@ namespace PhysicsEngine
 	{
 		body = new Box (PxTransform (PxVec3 (pose.p.x, 5.f, pose.p.z), pose.q), PxVec3 (dimensions.x, thickness, dimensions.z));
 
-		joint = new RevoluteJoint (nullptr, PxTransform (PxVec3 (pose.p.x, 1.f, pose.p.z), pose.q), body, PxTransform (PxVec3 (0.f, -.1f, 0.f)));
+		joint = new RevoluteJoint (nullptr, PxTransform (PxVec3 (pose.p.x, 1.f, pose.p.z), pose.q), 
+								   body, PxTransform (PxVec3 (0.f, -.1f, 0.f)));
 		joint->Get ()->setConstraintFlag (PxConstraintFlag::eVISUALIZATION, true);
 
 	}
@@ -241,8 +242,4 @@ namespace PhysicsEngine
 	{
 		scene->Add (body);
 	}
-
-
-
-
 }

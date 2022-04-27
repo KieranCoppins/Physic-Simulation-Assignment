@@ -121,6 +121,11 @@ namespace PhysicsEngine
 		my_callback = new MySimulationEventCallback ();
 		px_scene->setSimulationEventCallback (my_callback);
 
+		//Create Materials in enum order
+		CreateMaterial (0.1f, 0.02f);		//ICE
+		CreateMaterial (0.6f, 0.4f);		//METAL
+
+
 		plane = new Plane ();
 		plane->Color (PxVec3 (210.f / 255.f, 210.f / 255.f, 210.f / 255.f));
 		Add (plane);
@@ -152,17 +157,25 @@ namespace PhysicsEngine
 
 		ball = new Sphere (PxTransform(PxVec3(10.f, 5.f, 5.f), PxQuat(PxIdentity)),.25f, 5000.f);
 		Add (ball);
+
 		*/
 
+		platform1 = new Platform (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(PxIdentity)), PxVec3 (5.f, 0.1f, 5.f));
+		platform1->Material (GetMaterial (Materials::METAL));
+		Add (platform1);
+
+		Platform* platform2 = new Platform (PxTransform (PxVec3 (10.f, 0.f, 0.f), PxQuat (PxIdentity)), PxVec3 (5.f, 0.1f, 5.f));
+		platform2->Material (GetMaterial (Materials::ICE));
+		Add (platform2);
 
 		const int dominoesNum = 50;
 		PxReal dominoSpacing = .5f;
 
 		//Creates a see saw
-		seesaw = new Balancer (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(90.0f * (PxPi/180), PxVec3 (0.f, 1.f, 0.f))), PxVec3 (2.f, 1.f, 5.f));
-		seesaw->AddToScene (this);
+		//seesaw = new Balancer (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(90.0f * (PxPi/180), PxVec3 (0.f, 1.f, 0.f))), PxVec3 (2.f, 1.f, 5.f));
+		//seesaw->AddToScene (this);
 
-		PxTransform start = PxTransform (PxVec3 (4.f, 2.5f, 0.f),
+		PxTransform start = PxTransform (PxVec3 (0.f, 2.5f, 0.f),
 										 PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f)));
 
 		PxTransform lastPoint = Line (20, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));

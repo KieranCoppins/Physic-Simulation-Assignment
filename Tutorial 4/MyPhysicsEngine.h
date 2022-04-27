@@ -45,6 +45,8 @@ namespace PhysicsEngine
 		Platform* ramp;
 
 		Balancer* seesaw;
+
+		Platform* platform1;
 		
 	public:
 		//specify your custom filter shader here
@@ -71,5 +73,11 @@ namespace PhysicsEngine
 
 		PxTransform DrawBox (int width, int height, PxReal spacing, PxTransform& center, bool fill = false);
 		PxTransform Line (int length, PxVec3& direction, PxReal spacing, PxTransform& start, PxVec3& colour = PxVec3 (1.f, 1.f, 1.f));
+	};
+
+	enum Materials : PxU32 {
+		DEFAULT,
+		ICE,
+		METAL
 	};
 }
