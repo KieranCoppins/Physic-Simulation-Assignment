@@ -252,12 +252,13 @@ namespace PhysicsEngine
 			Sphere* ball = new Sphere (PxTransform (pos, pose.q), ballRadius, density);
 			((PxRigidBody*) ball->Get ())->setRigidBodyFlag (PxRigidBodyFlag::eENABLE_CCD, true);
 			RevoluteJoint* joint = new RevoluteJoint (nullptr,
-													  PxTransform (PxVec3 (pos.x, pos.y, pos.z), pose.q),
+													  PxTransform (PxVec3 (pos.x, pos.y + 5.f, pos.z), pose.q),
 													  ball,
 													  PxTransform (PxVec3 (0.f, 5.f, 0.f)));
 			joint->Get ()->setConstraintFlag (PxConstraintFlag::eVISUALIZATION, true);
 			joints.push_back (joint);
 			balls.push_back (ball);
+
 		}
 	}
 

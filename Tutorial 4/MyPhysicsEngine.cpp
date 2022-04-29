@@ -184,7 +184,7 @@ namespace PhysicsEngine
 		//lastPoint = Line (20, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3(1.f, 0.f, 0.f));
 
 		//Create Newton Cradle
-		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (10.f, 10.f, 0.f), PxQuat((PxPi/2), PxVec3(0.f, 1.f, 0.f))), 1.f, 5, 1.f);
+		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (10.f, 2.f, 0.f), PxQuat((PxPi/2), PxVec3(0.f, 1.f, 0.f))), 1.f, 5, 1.f);
 		newtonCradle->SetMaterial (GetMaterial (Materials::METALBALL));
 		newtonCradle->AddToScene (this);
 
