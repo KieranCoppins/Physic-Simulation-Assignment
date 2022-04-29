@@ -47,6 +47,8 @@ namespace PhysicsEngine
 		Balancer* seesaw;
 
 		Platform* platform1;
+
+		NewtonCradle* newtonCradle;
 		
 	public:
 		//specify your custom filter shader here
@@ -78,6 +80,7 @@ namespace PhysicsEngine
 	enum Materials : PxU32 {
 		DEFAULT,
 		ICE,
-		METAL
+		METAL,
+		METALBALL
 	};
 }

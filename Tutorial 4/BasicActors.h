@@ -139,4 +139,18 @@ namespace PhysicsEngine
 
 		void AddToScene (Scene* scene);
 	};
+
+	class NewtonCradle : public DynamicActor {
+	private:
+		vector<RevoluteJoint*> joints;
+		vector<Sphere*> balls;
+
+	public:
+		NewtonCradle (const PxTransform& pose = PxTransform (PxIdentity), PxReal ballRadius = 1.f, PxU32 ballCount = 5, PxReal density = 1.f);
+		~NewtonCradle ();
+
+		void AddToScene (Scene* scene);
+
+		void SetMaterial (PxMaterial* material);
+	};
 }

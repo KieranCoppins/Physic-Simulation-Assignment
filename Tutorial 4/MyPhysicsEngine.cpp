@@ -122,8 +122,9 @@ namespace PhysicsEngine
 		px_scene->setSimulationEventCallback (my_callback);
 
 		//Create Materials in enum order
-		CreateMaterial (0.1f, 0.02f);		//ICE
-		CreateMaterial (0.6f, 0.4f);		//METAL
+		CreateMaterial (0.1f, 0.02f);			//ICE
+		CreateMaterial (0.6f, 0.4f);			//METAL
+		CreateMaterial (0.6f, 0.4f, 1.f);		//METALBALL
 
 
 		plane = new Plane ();
@@ -178,9 +179,14 @@ namespace PhysicsEngine
 		PxTransform start = PxTransform (PxVec3 (0.f, 2.5f, 0.f),
 										 PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f)));
 
-		PxTransform lastPoint = Line (20, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
-		lastPoint = Line (20, PxVec3 (.5f, 0.f, .5f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
-		lastPoint = Line (20, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3(1.f, 0.f, 0.f));
+		//PxTransform lastPoint = Line (20, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
+		//lastPoint = Line (20, PxVec3 (.5f, 0.f, .5f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		//lastPoint = Line (20, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3(1.f, 0.f, 0.f));
+
+		//Create Newton Cradle
+		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (10.f, 10.f, 0.f), PxQuat (PxIdentity)), 1.f, 5, 5000.f);
+		newtonCradle->SetMaterial (GetMaterial (Materials::METALBALL));
+		newtonCradle->AddToScene (this);
 
 
 		//ball = new Sphere (PxTransform (PxVec3 (5.f, 10.f, -4.f), PxQuat (PxIdentity)), 1.f, 100.f);

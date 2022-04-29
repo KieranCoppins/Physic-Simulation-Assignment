@@ -242,4 +242,46 @@ namespace PhysicsEngine
 	{
 		scene->Add (body);
 	}
+	NewtonCradle::NewtonCradle (const PxTransform& pose, PxReal ballRadius, PxU32 ballCount, PxReal density) : DynamicActor(pose)
+	{
+		for (int i = 0; i < ballCount; i++) {
+			PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2)) - pose.p;
+			relativePos = pose.q.rotate (relativePos);
+			PxVec3 pos = relativePos + pose.p;
+
+			Sphere* ball = new Sphere (PxTransform (pos, pose.q), ballRadius, density);
+			((PxRigidBody*) ball->Get())->setRigidBodyFlag (PxRigidBodyFlag::eENABLE_CCD, true);
+			RevoluteJoint* joint = new RevoluteJoint (nullptr,
+													  PxTransform (PxVec3 (pos.x, pos.y, pos.z), pose.q),
+													  ball,
+													  PxTransform (PxVec3 (0.f, 5.f, 0.f)));
+			joint->Get ()->setConstraintFlag (PxConstraintFlag::eVISUALIZATION, true);
+			joints.push_back (joint);
+			balls.push_back (ball);
+		}
+	}
+
+	NewtonCradle::~NewtonCradle ()
+	{
+		for (int i = 0; i < balls.size (); i++) {
+			delete joints[i];
+			delete balls[i];
+		}
+	}
+
+	void NewtonCradle::AddToScene (Scene* scene)
+	{
+		for (int i = 0; i < balls.size (); i++) {
+			scene->Add (balls[i]);
+		}
+	}
+
+	void NewtonCradle::SetMaterial (PxMaterial* material)
+	{
+		for (int i = 0; i < balls.size (); i++) {
+			balls[i]->Material (material);
+			cout << "Changed Ball Material" << endl;
+		}
+	}
+
 }
