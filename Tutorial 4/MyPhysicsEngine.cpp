@@ -124,7 +124,7 @@ namespace PhysicsEngine
 		//Create Materials in enum order
 		CreateMaterial (0.1f, 0.02f);			//ICE
 		CreateMaterial (0.6f, 0.4f);			//METAL
-		CreateMaterial (0.6f, 0.4f, 1.f);		//METALBALL
+		CreateMaterial (0.f, 0.f, 1.f);		//METALBALL
 
 
 		plane = new Plane ();
@@ -184,7 +184,7 @@ namespace PhysicsEngine
 		//lastPoint = Line (20, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3(1.f, 0.f, 0.f));
 
 		//Create Newton Cradle
-		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (10.f, 10.f, 0.f), PxQuat (PxIdentity)), 1.f, 5, 5000.f);
+		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (10.f, 10.f, 0.f), PxQuat((PxPi/2), PxVec3(0.f, 1.f, 0.f))), 1.f, 5, 1.f);
 		newtonCradle->SetMaterial (GetMaterial (Materials::METALBALL));
 		newtonCradle->AddToScene (this);
 

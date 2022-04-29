@@ -245,12 +245,12 @@ namespace PhysicsEngine
 	NewtonCradle::NewtonCradle (const PxTransform& pose, PxReal ballRadius, PxU32 ballCount, PxReal density) : DynamicActor(pose)
 	{
 		for (int i = 0; i < ballCount; i++) {
-			PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2)) - pose.p;
+			PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2) + (ballRadius / 2) * i) - pose.p;
 			relativePos = pose.q.rotate (relativePos);
 			PxVec3 pos = relativePos + pose.p;
 
 			Sphere* ball = new Sphere (PxTransform (pos, pose.q), ballRadius, density);
-			((PxRigidBody*) ball->Get())->setRigidBodyFlag (PxRigidBodyFlag::eENABLE_CCD, true);
+			((PxRigidBody*) ball->Get ())->setRigidBodyFlag (PxRigidBodyFlag::eENABLE_CCD, true);
 			RevoluteJoint* joint = new RevoluteJoint (nullptr,
 													  PxTransform (PxVec3 (pos.x, pos.y, pos.z), pose.q),
 													  ball,
