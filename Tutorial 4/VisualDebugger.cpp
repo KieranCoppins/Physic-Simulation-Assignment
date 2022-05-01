@@ -188,7 +188,7 @@ namespace VisualDebugger
 		{
 		//implement your own
 		case 'R':
-			scene->ExampleKeyReleaseHandler();
+			scene->ExampleKeyReleaseHandler(camera->getDir(), camera->getEye ());
 			break;
 		default:
 			break;

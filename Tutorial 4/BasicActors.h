@@ -154,4 +154,9 @@ namespace PhysicsEngine
 
 		void SetMaterial (PxMaterial* material);
 	};
+
+	class MetalBall : public DynamicActor {
+	public:
+		MetalBall (const PxTransform& pose = PxTransform (PxIdentity), PxReal radius = .2f, PxReal density = 656.52f);
+	};
 }

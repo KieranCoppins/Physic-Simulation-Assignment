@@ -3,6 +3,7 @@
 #include "BasicActors.h"
 #include <iostream>
 #include <iomanip>
+#include <type_traits>
 
 namespace PhysicsEngine
 {
@@ -65,10 +66,14 @@ namespace PhysicsEngine
 		virtual void CustomUpdate ();
 
 		/// An example use of key release handling
-		void ExampleKeyReleaseHandler ();
+		void ExampleKeyReleaseHandler (PxVec3 dir, PxVec3 pos);
 
 		/// An example use of key presse handling
 		void ExampleKeyPressHandler ();
+
+		//Shoots projectile in forward vector direction with force
+		template <class T>
+		T* ShootObject (PxVec3 forwardVector, PxVec3 pos, PxReal force, PxMaterial* mat);
 
 	private:
 		void Spiral (PxReal distance, const int numTiles, PxTransform &pose);
@@ -84,4 +89,19 @@ namespace PhysicsEngine
 		METAL,
 		METALBALL
 	};
+	template<class T>
+	inline T* MyScene::ShootObject (PxVec3 forwardVector, PxVec3 pos, PxReal force, PxMaterial* mat)
+	{
+		if (!std::is_base_of<DynamicActor, T>::value) {
+			cerr << "MyScene::ShootObject not passed a dynamic actor" << endl;
+			return nullptr;
+		}
+
+		DynamicActor* projectile = new T ();
+		((PxRigidBody*) projectile->Get ())->setGlobalPose (PxTransform(pos));
+		Add (projectile);
+		((PxRigidBody*) projectile->Get ())->addForce(forwardVector * force);
+		projectile->Material (mat);
+		return (T*)projectile;
+	}
 }

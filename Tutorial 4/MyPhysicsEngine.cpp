@@ -123,8 +123,8 @@ namespace PhysicsEngine
 
 		//Create Materials in enum order
 		CreateMaterial (0.1f, 0.02f);			//ICE
-		CreateMaterial (0.6f, 0.4f);			//METAL
-		CreateMaterial (0.6f, 0.4f, 1.f);		//METALBALL
+		CreateMaterial (1.1f, 1.35f);			//METAL
+		CreateMaterial (1.1f, 1.35f, 1.f);		//METALBALL
 
 
 		plane = new Plane ();
@@ -192,8 +192,9 @@ namespace PhysicsEngine
 		lastPoint = Line (20, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3(0.f, 0.f, 1.f), - 90.f, PxVec3 (0.f, 1.f, 0.f));
 		lastPoint = Line (20, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
-		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = Line (20, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 
 
 		//ball = new Sphere (PxTransform (PxVec3 (5.f, 10.f, -4.f), PxQuat (PxIdentity)), 1.f, 100.f);
@@ -210,8 +211,9 @@ namespace PhysicsEngine
 
 	}
 
-	void MyScene::ExampleKeyReleaseHandler () {
+	void MyScene::ExampleKeyReleaseHandler (PxVec3 dir, PxVec3 pos) {
 		cerr << "I am realeased!" << endl;
+		MetalBall* ball = ShootObject<MetalBall> (dir, pos, 30000.f, GetMaterial(Materials::METAL));
 	}
 
 	void MyScene::ExampleKeyPressHandler () {
@@ -227,7 +229,7 @@ namespace PhysicsEngine
 		}
 	}
 	/// <summary>
-	/// Creates a box of dominoes of width and height and out puts the ending position of the dominoes
+	/// Creates a box of dominoes of width and height and out puts the ending position of the dominoes - VERY LAGGY
 	/// </summary>
 	/// <param name="width"></param>
 	/// <param name="depth"></param>

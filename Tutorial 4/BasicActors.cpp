@@ -341,4 +341,10 @@ namespace PhysicsEngine
 		}
 	}
 
+	MetalBall::MetalBall (const PxTransform& pose, PxReal radius, PxReal density) : DynamicActor(pose)
+	{
+		CreateShape (PxSphereGeometry (radius), density);
+	}
+
+
 }
