@@ -170,7 +170,7 @@ namespace PhysicsEngine
 				if (fix_top && (j == 0)) //fix the top row of vertices
 					vertices[offset].invWeight = 0.f;
 				else
-					vertices[offset].invWeight = 1.f;
+					vertices[offset].invWeight = 5.f;
 			}
 
 			for (PxU32 j = 0; j < height; j++)
@@ -206,6 +206,7 @@ namespace PhysicsEngine
 		actor = (PxActor*) GetPhysics ()->createCloth (pose, *fabric, vertices, PxClothFlags ());
 		//collisions with the scene objects
 		((PxCloth*) actor)->setClothFlag (PxClothFlag::eSCENE_COLLISION, true);
+		((PxCloth*) actor)->setClothFlag (PxClothFlag::eSWEPT_CONTACT, true);
 
 		colors.push_back (default_color);
 		actor->userData = new UserData (&colors.back (), &mesh_desc);
