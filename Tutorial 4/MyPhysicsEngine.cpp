@@ -169,24 +169,25 @@ namespace PhysicsEngine
 		platform2->Material (GetMaterial (Materials::ICE));
 		Add (platform2);
 
-		const int dominoesNum = 50;
 		PxReal dominoSpacing = .5f;
 
 		//Creates a see saw
 		//seesaw = new Balancer (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(90.0f * (PxPi/180), PxVec3 (0.f, 1.f, 0.f))), PxVec3 (2.f, 1.f, 5.f));
 		//seesaw->AddToScene (this);
 
-		PxTransform start = PxTransform (PxVec3 (0.f, 2.5f, 0.f),
+		PxTransform start = PxTransform (PxVec3 (2.3f, .12f, 0.f),
 										 PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f)));
 
 		//PxTransform lastPoint = Line (20, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
 		//lastPoint = Line (20, PxVec3 (.5f, 0.f, .5f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 		//lastPoint = Line (20, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3(1.f, 0.f, 0.f));
 
-		//Create Newton Cradle
-		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (0.f, 30.f, 0.f), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))));
+		//Create Newton Cradle to start the domino falling
+		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (0.f, 4.f, 0.f), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))));
 		newtonCradle->SetMaterial (GetMaterial (Materials::METALBALL));
 		newtonCradle->AddToScene (this);
+
+		PxTransform lastPoint = Line (50, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
 
 
 		//ball = new Sphere (PxTransform (PxVec3 (5.f, 10.f, -4.f), PxQuat (PxIdentity)), 1.f, 100.f);
