@@ -212,12 +212,11 @@ namespace PhysicsEngine
 	}
 
 	void MyScene::ExampleKeyReleaseHandler (PxVec3 dir, PxVec3 pos) {
-		cerr << "I am realeased!" << endl;
-		MetalBall* ball = ShootObject<MetalBall> (dir, pos, 30000.f, GetMaterial(Materials::METAL));
+		MetalBall* ball = ShootObject<MetalBall> (dir, pos, 30000.f, GetMaterial(Materials::METALBALL));
 	}
 
 	void MyScene::ExampleKeyPressHandler () {
-		cerr << "I am pressed!" << endl;
+
 	}
 
 	void MyScene::Spiral (PxReal distance, const int numTiles, PxTransform& pose)

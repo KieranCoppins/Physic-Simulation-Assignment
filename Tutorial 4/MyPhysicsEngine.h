@@ -71,9 +71,17 @@ namespace PhysicsEngine
 		/// An example use of key presse handling
 		void ExampleKeyPressHandler ();
 
-		//Shoots projectile in forward vector direction with force
+		/// <summary>
+		/// Shoots class T in from position in direction with force. T MUST be derived from DynamicActor
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="forwardVector"></param>
+		/// <param name="pos"></param>
+		/// <param name="force"></param>
+		/// <param name="mat"></param>
+		/// <returns></returns>
 		template <class T>
-		T* ShootObject (PxVec3 forwardVector, PxVec3 pos, PxReal force, PxMaterial* mat);
+		T* ShootObject (PxVec3 forwardVector, PxVec3 pos, PxReal force, PxMaterial* mat = GetMaterial());
 
 	private:
 		void Spiral (PxReal distance, const int numTiles, PxTransform &pose);
