@@ -50,6 +50,8 @@ namespace PhysicsEngine
 		Platform* platform1;
 
 		NewtonCradle* newtonCradle;
+
+		Stairs* stairs;
 		
 	public:
 		//specify your custom filter shader here
@@ -97,11 +99,12 @@ namespace PhysicsEngine
 		METAL,
 		METALBALL
 	};
+
 	template<class T>
 	inline T* MyScene::ShootObject (PxVec3 forwardVector, PxVec3 pos, PxReal force, PxMaterial* mat)
 	{
 		if (!std::is_base_of<DynamicActor, T>::value) {
-			cerr << "MyScene::ShootObject not passed a dynamic actor" << endl;
+			cerr << "MyScene::ShootObject not passed a class drived from dynamic actor" << endl;
 			return nullptr;
 		}
 

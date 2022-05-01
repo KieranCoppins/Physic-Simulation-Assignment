@@ -159,4 +159,21 @@ namespace PhysicsEngine
 	public:
 		MetalBall (const PxTransform& pose = PxTransform (PxIdentity), PxReal radius = .2f, PxReal density = 656.52f);
 	};
+
+	class Stairs : public StaticActor {
+	private:
+		PxReal height;
+		vector<Domino*> dominos;
+		PxTransform endPoint;
+		PxReal stairWidth;
+
+	public:
+		Stairs (const PxTransform& pose = PxTransform (PxIdentity), PxU32 steps = 3, PxReal stepHeight = .12f);
+
+		PxReal getHeight ();
+		PxTransform getEndPoint ();
+		PxReal getStairWidth ();
+
+		void AddToScene (Scene* scene);
+	};
 }

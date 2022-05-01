@@ -124,7 +124,7 @@ namespace PhysicsEngine
 		//Create Materials in enum order
 		CreateMaterial (0.1f, 0.02f);			//ICE
 		CreateMaterial (1.1f, 1.35f);			//METAL
-		CreateMaterial (1.1f, 1.35f, 1.f);		//METALBALL
+		CreateMaterial (1.1f, 1.35f, .8f);		//METALBALL
 
 
 		plane = new Plane ();
@@ -195,6 +195,19 @@ namespace PhysicsEngine
 		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
 		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
 		lastPoint = Line (20, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = Line (30, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+
+		stairs = new Stairs (PxTransform (PxVec3(lastPoint.p.x, lastPoint.p.y, lastPoint.p.z - dominoSpacing / 2.f), PxQuat(PxPi/2, PxVec3(0.f, 1.f, 0.f))),
+							 12, 0.12f);
+		stairs->AddToScene (this);
+		lastPoint = stairs->getEndPoint ();
+		Platform* bridge = new Platform (PxTransform (PxVec3 (lastPoint.p.x, lastPoint.p.y - 0.24f, lastPoint.p.z - 4.f - 0.12)),
+										 PxVec3 (stairs->getStairWidth () / 2.f, 0.12f / 2.f, 4.f));
+		Add (bridge);
+
+		lastPoint = Line (30, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+
 
 
 		//ball = new Sphere (PxTransform (PxVec3 (5.f, 10.f, -4.f), PxQuat (PxIdentity)), 1.f, 100.f);

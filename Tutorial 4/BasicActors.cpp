@@ -347,4 +347,55 @@ namespace PhysicsEngine
 	}
 
 
+	Stairs::Stairs (const PxTransform& pose, PxU32 steps, PxReal stepHeight) : StaticActor(pose)
+	{
+		///
+		/// UK Building regulations state:
+		///		- Step Rise should not exceed 220mm
+		///		- Step Going should be a minimum of 220mm
+		///		- No regulation on Step Width but standard flights are 860mm
+		///		- The pitch of the stair case should not exceed 42 degrees
+		/// Our purpose for dominos will try match these proportions:
+		///		- Step Rise = StepHeight
+		///		- Step Going (StepDepth) = StepHeight * 2
+		///		- Step Width = step rise * 4
+		PxReal stepWidth = stepHeight * 4.f;
+		PxReal stepDepth = stepHeight * 2.f;
+
+		for (int i = 0; i < steps; i++) {
+			CreateShape (PxBoxGeometry (stepDepth / 2.f, (stepHeight)/2.f, stepWidth / 2.f));
+			GetShape (i)->setLocalPose (PxTransform (PxVec3 (stepDepth * i, stepHeight * i, 0.f)));
+			Domino* d = new Domino (PxTransform (pose.p + pose.q.rotate(PxVec3(stepDepth * i, stepHeight * i + 0.24f, 0.f)), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f))));
+			dominos.push_back (d);
+		}
+
+		height = stepHeight * steps;
+		endPoint = PxTransform (pose.p + pose.q.rotate (PxVec3 (stepDepth * (steps - 1.f), stepHeight * (steps - 1.f) + 0.24f, 0.f)), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f)));
+		stairWidth = stepWidth;
+	}
+
+	PxReal Stairs::getHeight ()
+	{
+		return height;
+	}
+
+	PxTransform Stairs::getEndPoint ()
+	{
+		return endPoint;
+	}
+
+	PxReal Stairs::getStairWidth ()
+	{
+		return stairWidth;
+	}
+
+	void Stairs::AddToScene (Scene* scene)
+	{
+		scene->Add (this);
+		for (int i = 0; i < dominos.size (); i++) {
+			scene->Add (dominos[i]);
+		}
+	}
+
+
 }
