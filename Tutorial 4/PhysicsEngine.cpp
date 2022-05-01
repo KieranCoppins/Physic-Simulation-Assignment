@@ -64,7 +64,11 @@ namespace PhysicsEngine
 		if (!cooking)
 			throw new Exception("PhysicsEngine::PxInit, Could not initialise the cooking component.");
 
-		//create a deafult material
+		//Need to initialise extensions for pvd to work when joints are in the scene
+		if (physics && pvd)
+			PxInitExtensions (*physics, pvd);
+
+		//create a default material
 		CreateMaterial();
 	}
 
