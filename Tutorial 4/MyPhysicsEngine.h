@@ -97,7 +97,8 @@ namespace PhysicsEngine
 		DEFAULT,
 		ICE,
 		METAL,
-		METALBALL
+		METALBALL,
+		WOOD
 	};
 
 	template<class T>

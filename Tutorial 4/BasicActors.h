@@ -125,9 +125,11 @@ namespace PhysicsEngine
 		Box* body;
 		RevoluteJoint* joint;
 	public:
-		Balancer (const PxTransform& pose = PxTransform (PxIdentity), PxVec3 dimensions = PxVec3 (1.f, 1.f, 1.f), PxReal density = 1.f, PxReal thickness = .1f);
+		Balancer (const PxTransform& pose = PxTransform (PxIdentity), PxVec3 dimensions = PxVec3 (1.f, 1.f, 1.f), PxReal density = 1.f);
 
 		void AddToScene (Scene* scene);
+
+		void Material (PxMaterial* mat);
 	};
 
 	class WindMill : public DynamicActor {

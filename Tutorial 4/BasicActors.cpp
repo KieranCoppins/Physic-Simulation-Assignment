@@ -228,11 +228,11 @@ namespace PhysicsEngine
 	}
 
 
-	Balancer::Balancer (const PxTransform& pose, PxVec3 dimensions, PxReal density, PxReal thickness) : DynamicActor(pose)
+	Balancer::Balancer (const PxTransform& pose, PxVec3 dimensions, PxReal density) : DynamicActor(pose)
 	{
-		body = new Box (PxTransform (PxVec3 (pose.p.x, 5.f, pose.p.z), pose.q), PxVec3 (dimensions.x, thickness, dimensions.z));
+		body = new Box (PxTransform (PxVec3 (pose.p.x, pose.p.y, pose.p.z), pose.q), PxVec3 (dimensions.x, dimensions.y, dimensions.z));
 
-		joint = new RevoluteJoint (nullptr, PxTransform (PxVec3 (pose.p.x, 1.f, pose.p.z), pose.q), 
+		joint = new RevoluteJoint (nullptr, PxTransform (PxVec3 (pose.p.x, pose.p.y, pose.p.z), pose.q), 
 								   body, PxTransform (PxVec3 (0.f, -.1f, 0.f)));
 		joint->Get ()->setConstraintFlag (PxConstraintFlag::eVISUALIZATION, true);
 
@@ -241,6 +241,10 @@ namespace PhysicsEngine
 	void Balancer::AddToScene (Scene* scene)
 	{
 		scene->Add (body);
+	}
+	void Balancer::Material (PxMaterial* mat)
+	{
+		body->Material (mat);
 	}
 	NewtonCradle::NewtonCradle (const PxTransform& pose, PxReal ballRadius, PxU32 ballCount, PxReal density) : DynamicActor(pose)
 	{
@@ -257,12 +261,15 @@ namespace PhysicsEngine
 			//Create the ball for the cradle with the relative position - 
 			//spawn the first ball in an offset so that it  drops to start the cradles reaction
 			Sphere* ball;
+			/*
 			if (i == 0) {
 				ball = new Sphere (PxTransform (PxVec3(pos.x, pos.y, pos.z) + pose.q.rotate(PxVec3(0.f, ballRadius * 2.f * 10.f, -ballRadius * 2.f * 10.f)), pose.q), ballRadius, density);
 			}
 			else {
 				ball = new Sphere (PxTransform (pos, pose.q), ballRadius, density);
 			}
+			*/
+			ball = new Sphere (PxTransform (pos, pose.q), ballRadius, density);
 
 			//Create a joint that connects to the world, I.E is stationary
 			//Future improvements could be to create a physically accurate frame.
@@ -366,6 +373,7 @@ namespace PhysicsEngine
 			CreateShape (PxBoxGeometry (stepDepth / 2.f, (stepHeight)/2.f, stepWidth / 2.f));
 			GetShape (i)->setLocalPose (PxTransform (PxVec3 (stepDepth * i, stepHeight * i, 0.f)));
 			Domino* d = new Domino (PxTransform (pose.p + pose.q.rotate(PxVec3(stepDepth * i, stepHeight * i + 0.24f, 0.f)), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f))));
+			d->Color (PxVec3 (0.f, 0.f, 1.f));
 			dominos.push_back (d);
 		}
 
