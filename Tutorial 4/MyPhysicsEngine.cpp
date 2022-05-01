@@ -175,7 +175,7 @@ namespace PhysicsEngine
 		//seesaw = new Balancer (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(90.0f * (PxPi/180), PxVec3 (0.f, 1.f, 0.f))), PxVec3 (2.f, 1.f, 5.f));
 		//seesaw->AddToScene (this);
 
-		PxTransform start = PxTransform (PxVec3 (2.3f, .12f, 0.f),
+		PxTransform start = PxTransform (PxVec3 (2.3f, .12f, -6.f),
 										 PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f)));
 
 		//PxTransform lastPoint = Line (20, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
@@ -183,11 +183,17 @@ namespace PhysicsEngine
 		//lastPoint = Line (20, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3(1.f, 0.f, 0.f));
 
 		//Create Newton Cradle to start the domino falling
-		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (0.f, 4.f, 0.f), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))));
+		newtonCradle = new NewtonCradle (PxTransform (PxVec3 (0.f, 4.f, -6.f), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))));
 		newtonCradle->SetMaterial (GetMaterial (Materials::METALBALL));
 		newtonCradle->AddToScene (this);
 
 		PxTransform lastPoint = Line (50, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = Line (20, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3(0.f, 0.f, 1.f), - 90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = Line (20, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
 
 
 		//ball = new Sphere (PxTransform (PxVec3 (5.f, 10.f, -4.f), PxQuat (PxIdentity)), 1.f, 100.f);
@@ -267,6 +273,23 @@ namespace PhysicsEngine
 			Add (d);
 		}
 		return PxTransform(pose.p, start.q);
+	}
+
+	PxTransform MyScene::DrawBend (int length, PxTransform& start, PxReal spacing, PxVec3 dir, PxReal degrees, PxVec3& colour)
+	{
+		PxTransform pose;
+		for (int i = 0; i <= length; i++) {
+			PxReal rotationAngle = (((degrees / length) * i) / 2.f);
+			pose = start;
+			PxVec3 direction = (PxQuat (rotationAngle * (PxPi / 180), PxVec3 (0.f, 1.f, 0.f)).rotate (dir)).getNormalized();
+			pose.p += ((i + 1) * spacing) * direction;
+			pose.q *= PxQuat ((((rotationAngle * 2) + (90.f * dir.x)) * (PxPi / 180)), PxVec3 (1.f, 0.f, 0.f));
+			Domino* d = new Domino (pose);
+			d->Color (colour);
+			dominoes.push_back (d);
+			Add (d);
+		}
+		return PxTransform (pose.p, start.q);
 	}
 
 

@@ -75,6 +75,7 @@ namespace PhysicsEngine
 
 		PxTransform DrawBox (int width, int height, PxReal spacing, PxTransform& center, bool fill = false);
 		PxTransform Line (int length, PxVec3& direction, PxReal spacing, PxTransform& start, PxVec3& colour = PxVec3 (1.f, 1.f, 1.f));
+		PxTransform DrawBend (int length, PxTransform& start, PxReal spacing, PxVec3 dir = PxVec3(1.f, 0.f, 0.f), PxReal degrees = 90.f, PxVec3& colour = PxVec3 (1.f, 1.f, 1.f));
 	};
 
 	enum Materials : PxU32 {
