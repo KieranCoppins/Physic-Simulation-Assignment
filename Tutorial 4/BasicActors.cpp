@@ -254,7 +254,7 @@ namespace PhysicsEngine
 			//Offset the position larger than the contact offset (which defaults to 0.02)
 			//This allows for momentum to be calculated some-what accurately between each ball.
 			//If the cradle is set to be touching, conservation of momentum isn't calculated correctly.
-			PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2) + (0.1f) * i) - pose.p;
+			PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2) + (0.05f) * i) - pose.p;
 			//PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2)) - pose.p;
 			relativePos = pose.q.rotate (relativePos);
 			PxVec3 pos = relativePos + pose.p;

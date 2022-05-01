@@ -209,6 +209,14 @@ namespace PhysicsEngine
 		bridge->Material (GetMaterial (Materials::WOOD));
 		Add (bridge);
 
+
+		cloth = new Cloth (PxTransform (PxVec3 (lastPoint.p.x, lastPoint.p.y - 0.30f, lastPoint.p.z - 2.f), PxQuat(PxPi/2, PxVec3(0.f, 1.f, 0.f))),
+						   PxVec2 (5.f, 1.2f), 
+						   20, 20);
+		((PxCloth*) cloth->Get ())->setSolverFrequency (120.f);
+		((PxCloth*) cloth->Get ())->setFrictionCoefficient (.25f);
+		Add (cloth);
+
 		lastPoint = Line (16, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 
 		lastPoint.p = PxVec3 (lastPoint.p.x, lastPoint.p.y - (13 * 0.12f), lastPoint.p.z - (12 * 0.24f));
@@ -242,8 +250,8 @@ namespace PhysicsEngine
 		seesaw->AddToScene (this);
 
 		lastPoint.p.z += .8f;
-		lastPoint.p.y += .3f;
-
+		lastPoint.p.y += .4f;
+		
 		Box* box = new Box (PxTransform (PxVec3 (lastPoint.p), PxQuat (0.0f * (PxPi / 180), PxVec3 (0.f, 1.f, 0.f))),
 							PxVec3 (.2f, .2f, .2f), 400.f);
 		box->Material (GetMaterial (Materials::WOOD));
