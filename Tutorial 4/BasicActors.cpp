@@ -245,18 +245,75 @@ namespace PhysicsEngine
 	NewtonCradle::NewtonCradle (const PxTransform& pose, PxReal ballRadius, PxU32 ballCount, PxReal density) : DynamicActor(pose)
 	{
 		for (int i = 0; i < ballCount; i++) {
-			PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2) + (ballRadius / 2) * i) - pose.p;
+			//Get the relative position foreach ball in the cradle.
+			//Offset the position larger than the contact offset (which defaults to 0.02)
+			//This allows for momentum to be calculated some-what accurately between each ball.
+			//If the cradle is set to be touching, conservation of momentum isn't calculated correctly.
+			PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2) + (0.1f) * i) - pose.p;
+			//PxVec3 relativePos = PxVec3 (pose.p.x, pose.p.y, pose.p.z + (ballRadius * i * 2)) - pose.p;
 			relativePos = pose.q.rotate (relativePos);
 			PxVec3 pos = relativePos + pose.p;
 
-			Sphere* ball = new Sphere (PxTransform (pos, pose.q), ballRadius, density);
-			((PxRigidBody*) ball->Get ())->setRigidBodyFlag (PxRigidBodyFlag::eENABLE_CCD, true);
-			RevoluteJoint* joint = new RevoluteJoint (nullptr,
-													  PxTransform (PxVec3 (pos.x, pos.y, pos.z), pose.q),
-													  ball,
-													  PxTransform (PxVec3 (0.f, 5.f, 0.f)));
-			joint->Get ()->setConstraintFlag (PxConstraintFlag::eVISUALIZATION, true);
-			joints.push_back (joint);
+			//Create the ball for the cradle with the relative position - 
+			//spawn the first ball in an offset so that it  drops to start the cradles reaction
+			Sphere* ball;
+			if (i == 0) {
+				ball = new Sphere (PxTransform (PxVec3(pos.x, pos.y, pos.z) + pose.q.rotate(PxVec3(0.f, ballRadius * 2.f * 10.f, -ballRadius * 2.f * 10.f)), pose.q), ballRadius, density);
+			}
+			else {
+				ball = new Sphere (PxTransform (pos, pose.q), ballRadius, density);
+			}
+
+			//Create a joint that connects to the world, I.E is stationary
+			//Future improvements could be to create a physically accurate frame.
+			/*
+			RevoluteJoint* joint;
+			if (i == 0) {
+				joint = new RevoluteJoint (nullptr,
+											PxTransform (PxVec3 (pos.x, pos.y, pos.z), pose.q),
+											ball,
+											PxTransform (PxVec3 (0.f, -(ballRadius * 2.0f * 6.0f), 0.f)));
+			}
+			else {
+				joint = new RevoluteJoint (nullptr,
+										PxTransform (PxVec3 (pos.x, pos.y, pos.z), pose.q),
+										ball,
+										PxTransform (PxVec3 (0.f, ballRadius * 2.0f * 6.0f, 0.f)));
+			}
+			*/
+
+			//To recreate similarity to a real world newtons cradle, two lengths of string of equal length
+			//are attached to the ball.
+			DistanceJoint* leftJoint = new DistanceJoint (nullptr,
+														 PxTransform (PxVec3 (pos.x, pos.y, pos.z) + pose.q.rotate(PxVec3 (-2.f, 0.f, 0.f)), pose.q),
+														 ball,
+														 PxTransform (PxVec3 (0.f, 0.f, 0.f)));
+
+			DistanceJoint* rightJoint = new DistanceJoint (nullptr,
+														  PxTransform (PxVec3 (pos.x, pos.y, pos.z) + pose.q.rotate(PxVec3(2.f, 0.f, 0.f)), pose.q),
+														  ball,
+														  PxTransform (PxVec3 (0.f, 0.f, 0.f)));
+
+			//Allow for a max distance to be set
+			((PxDistanceJoint*) leftJoint->Get ())->setDistanceJointFlag (PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, true);
+			((PxDistanceJoint*) rightJoint->Get ())->setDistanceJointFlag (PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, true);
+
+			//Disable the defaulted spring of the distance joint
+			((PxDistanceJoint*) rightJoint->Get ())->setDistanceJointFlag (PxDistanceJointFlag::eSPRING_ENABLED, false);
+			((PxDistanceJoint*) leftJoint->Get ())->setDistanceJointFlag (PxDistanceJointFlag::eSPRING_ENABLED, false);
+
+			//Set the max distance
+			((PxDistanceJoint*) rightJoint->Get ())->setMaxDistance (ballRadius * 2.0f * 10.0f);
+			((PxDistanceJoint*) leftJoint->Get ())->setMaxDistance (ballRadius * 2.0f * 10.0f);
+
+
+			//Enable visualisation of the joints
+			leftJoint->Get ()->setConstraintFlag (PxConstraintFlag::eVISUALIZATION, true);
+			rightJoint->Get ()->setConstraintFlag (PxConstraintFlag::eVISUALIZATION, true);
+
+			//Save the joints and balls in a vector
+			joints.push_back (leftJoint);
+			joints.push_back (rightJoint);
 			balls.push_back (ball);
 		}
 	}
@@ -280,7 +337,6 @@ namespace PhysicsEngine
 	{
 		for (int i = 0; i < balls.size (); i++) {
 			balls[i]->Material (material);
-			cout << "Changed Ball Material" << endl;
 		}
 	}
 

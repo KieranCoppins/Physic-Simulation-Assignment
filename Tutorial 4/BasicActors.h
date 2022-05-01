@@ -142,11 +142,12 @@ namespace PhysicsEngine
 
 	class NewtonCradle : public DynamicActor {
 	private:
-		vector<RevoluteJoint*> joints;
+		//vector<RevoluteJoint*> joints;
+		vector<DistanceJoint*> joints;
 		vector<Sphere*> balls;
 
 	public:
-		NewtonCradle (const PxTransform& pose = PxTransform (PxIdentity), PxReal ballRadius = 1.f, PxU32 ballCount = 5, PxReal density = 1.f);
+		NewtonCradle (const PxTransform& pose = PxTransform (PxIdentity), PxReal ballRadius = 0.2f, PxU32 ballCount = 5, PxReal density = 656.52f);
 		~NewtonCradle ();
 
 		void AddToScene (Scene* scene);
