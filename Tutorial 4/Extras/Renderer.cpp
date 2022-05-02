@@ -306,9 +306,14 @@ namespace VisualDebugger
 					std::vector<PxShape*> shapes(rigid_actor->getNbShapes());
 					rigid_actor->getShapes((PxShape**)&shapes.front(), (PxU32)shapes.size());
 
+
 					for (PxU32 j = 0; j < shapes.size(); j++)
 					{
 						const PxShape* shape = shapes[j];
+						//If the shape is a trigger, dont render it
+						if (shape->getFlags ().isSet (PxShapeFlag::eTRIGGER_SHAPE)) {
+							continue;
+						}
 						PxTransform pose = PxShapeExt::getGlobalPose(*shape, *shape->getActor());
 						PxGeometryHolder h = shape->getGeometry();
 						//move the plane slightly down to avoid visual artefacts
