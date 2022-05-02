@@ -163,11 +163,13 @@ namespace PhysicsEngine
 		*/
 
 		platform1 = new Platform (PxTransform (PxVec3 (0.f, 0.f, 0.f), PxQuat(PxIdentity)), PxVec3 (10.f, 0.1f, 10.f));
+		platform1->Color (PxVec3 (.0f, .0f, .0f));
 		platform1->Material (GetMaterial (Materials::METAL));
 		Add (platform1);
 
 		Platform* platform2 = new Platform (PxTransform (PxVec3 (20.f, 0.f, 0.f), PxQuat (PxIdentity)), PxVec3 (10.f, 0.1f, 10.f));
 		platform2->Material (GetMaterial (Materials::ICE));
+		platform2->Color (PxVec3 (.0f, .0f, .0f));
 		Add (platform2);
 
 		PxReal dominoSpacing = .5f;
@@ -227,6 +229,13 @@ namespace PhysicsEngine
 		stairs1->AddToScene (this);
 
 		lastPoint = Line (8, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+
+
+		SpinningBlade* sBlade = new SpinningBlade (PxTransform (lastPoint.p + PxVec3 (2.5f, .1f, 0.f)), 8, PxVec3(0.2f, 0.01f, 0.6f), 30.f);
+		sBlade->Material (GetMaterial (Materials::METAL));
+		sBlade->DriveVelocity (2.f);
+		sBlade->AddToScene (this);
+
 		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
 		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
 		lastPoint = Line (16, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));

@@ -407,4 +407,43 @@ namespace PhysicsEngine
 	}
 
 
+	Blade::Blade (const PxTransform& pose, PxU32 blades, PxVec3 bladeDimensions, PxReal bladeAngle, PxReal bladeDensity) : DynamicActor (pose)
+	{
+		CreateShape (PxSphereGeometry (bladeDimensions.x), bladeDensity);
+		for (int i = 0; i < blades; i++) {
+			CreateShape (PxBoxGeometry (bladeDimensions), bladeDensity);
+			float angle = (360.f / blades) * i;
+			PxQuat rot = PxQuat (angle * (PxPi / 180), PxVec3 (0.f, 1.f, 0.f));
+			rot *= PxQuat (bladeAngle * (PxPi / 180), PxVec3 (0.f, 0.f, 1.f));
+			GetShape (i + 1)->setLocalPose (PxTransform (PxVec3 (0.f, 0.f, 0.f) + rot.rotate(PxVec3(0.f, 0.f, bladeDimensions.x + bladeDimensions.z)), rot));
+		}
+	}
+	SpinningBlade::SpinningBlade (const PxTransform& pose, PxU32 blades, PxVec3 bladeDimensions, PxReal bladeAngle, PxReal bladeDensity) : DynamicActor (pose)
+	{
+		blade = new Blade (pose, blades, bladeDimensions, bladeAngle, bladeDensity);
+		PxQuat rot = PxQuat (PxPi / 2.f, PxVec3 (0.f, 0.f, 1.f));
+		PxQuat inverseRot = PxQuat (-(PxPi / 2.f), PxVec3 (0.f, 0.f, 1.f));
+		rot *= pose.q;
+		inverseRot *= pose.q;
+		joint = new RevoluteJoint (nullptr,
+								   PxTransform (PxVec3 (pose.p.x, pose.p.y, pose.p.z), rot),
+								   blade,
+								   PxTransform (PxVec3 (0.f, 0.f, 0.f), inverseRot));
+	}
+
+	void SpinningBlade::Material (PxMaterial* mat)
+	{
+		blade->Material (mat);
+	}
+
+	void SpinningBlade::AddToScene (Scene* scene)
+	{
+		scene->Add (blade);
+	}
+
+	void SpinningBlade::DriveVelocity (PxReal velocity)
+	{
+		joint->DriveVelocity (velocity * -1.f);
+	}
+
 }

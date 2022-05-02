@@ -178,4 +178,21 @@ namespace PhysicsEngine
 
 		void AddToScene (Scene* scene);
 	};
+
+	class Blade : public DynamicActor {
+	public:
+		Blade (const PxTransform& pose = PxTransform (PxIdentity), PxU32 blades = 4, PxVec3 bladeDimensions = PxVec3 (0.2f, 0.01f, 0.6f), PxReal bladeAngle = 0.f, PxReal bladeDensity = 2710.f);
+	};
+
+	class SpinningBlade : public DynamicActor {
+		Blade* blade;
+		RevoluteJoint* joint;
+	public:
+		SpinningBlade (const PxTransform& pose = PxTransform (PxIdentity), PxU32 blades = 4, PxVec3 bladeDimensions = PxVec3 (0.2f, 0.01f, 0.6f), PxReal bladeAngle = 0.f, PxReal bladeDensity = 2710.f);
+
+		void Material (PxMaterial* mat);
+		void AddToScene (Scene* scene);
+
+		void DriveVelocity (PxReal velocity);
+	};
 }
