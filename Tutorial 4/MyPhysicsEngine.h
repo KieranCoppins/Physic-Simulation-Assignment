@@ -52,6 +52,7 @@ namespace PhysicsEngine
 		NewtonCradle* newtonCradle;
 
 		Stairs* stairs;
+		Box* trigger;
 		
 	public:
 		//specify your custom filter shader here

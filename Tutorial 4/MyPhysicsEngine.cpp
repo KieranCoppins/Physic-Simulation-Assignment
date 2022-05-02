@@ -254,17 +254,26 @@ namespace PhysicsEngine
 		lastPoint.p.z += 1.f;
 
 		//Creates a seesaw
+		/*
 		Balancer* seesaw = new Balancer (PxTransform (PxVec3 (lastPoint.p), PxQuat(0.0f * (PxPi/180), PxVec3 (0.f, 1.f, 0.f))), PxVec3 (.5f, .05f, 1.f), 1.f);
 		seesaw->Material (GetMaterial (Materials::WOOD));
 		seesaw->AddToScene (this);
+		*/
 
-		lastPoint.p.z += .8f;
+		//lastPoint.p.z += .8f;
 		lastPoint.p.y += .4f;
-		
+		/*
 		Box* box = new Box (PxTransform (PxVec3 (lastPoint.p), PxQuat (0.0f * (PxPi / 180), PxVec3 (0.f, 1.f, 0.f))),
 							PxVec3 (.2f, .2f, .2f), 400.f);
 		box->Material (GetMaterial (Materials::WOOD));
 		Add (box);
+		*/
+
+		trigger = new Box (PxTransform (PxVec3 (lastPoint.p)),
+								PxVec3 (.5f, .5f, .5f));
+		trigger->SetTrigger (true);
+		trigger->Get ()->setActorFlag (PxActorFlag::eDISABLE_GRAVITY, true);
+		Add (trigger);
 
 
 		//ball = new Sphere (PxTransform (PxVec3 (5.f, 10.f, -4.f), PxQuat (PxIdentity)), 1.f, 100.f);
