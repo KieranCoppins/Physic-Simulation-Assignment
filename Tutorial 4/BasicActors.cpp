@@ -406,6 +406,13 @@ namespace PhysicsEngine
 		}
 	}
 
+	void Stairs::DominoMaterial (PxMaterial* mat)
+	{
+		for (int i = 0; i < dominos.size (); i++) {
+			dominos[i]->Material (mat);
+		}
+	}
+
 
 	Blade::Blade (const PxTransform& pose, PxU32 blades, PxVec3 bladeDimensions, PxReal bladeAngle, PxReal bladeDensity) : DynamicActor (pose)
 	{

@@ -132,16 +132,6 @@ namespace PhysicsEngine
 		void Material (PxMaterial* mat);
 	};
 
-	class WindMill : public DynamicActor {
-	private:
-		Box* blades[4];
-		RevoluteJoint* joint;
-	public:
-		WindMill (const PxTransform& pose = PxTransform (PxIdentity), PxReal bladeSpan = 3.f, PxReal density = 1.f);
-
-		void AddToScene (Scene* scene);
-	};
-
 	class NewtonCradle : public DynamicActor {
 	private:
 		//vector<RevoluteJoint*> joints;
@@ -177,6 +167,7 @@ namespace PhysicsEngine
 		PxReal getStairWidth ();
 
 		void AddToScene (Scene* scene);
+		void DominoMaterial (PxMaterial* mat);
 	};
 
 	class Blade : public DynamicActor {

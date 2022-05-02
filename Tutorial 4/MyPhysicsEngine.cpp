@@ -63,6 +63,13 @@ namespace PhysicsEngine
 				//check if eNOTIFY_TOUCH_FOUND trigger
 				if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 				{
+					//Check if the geometry is of a box type - chances are this is the the domino
+					if (pairs[i].otherShape->getGeometryType () == PxGeometryType::eBOX) {
+						//If we have triggered a domino, display the domino show is over
+						cout << "Domino show is over!" << endl;
+
+						//TODO PUT SOME KIND OF VISUAL THAT THE DOMINO SHOW IS OVER
+					}
 					cerr << "onTrigger::eNOTIFY_TOUCH_FOUND" << endl;
 					trigger = true;
 				}
@@ -126,6 +133,7 @@ namespace PhysicsEngine
 		CreateMaterial (1.1f, 1.35f);			//METAL
 		CreateMaterial (1.1f, 1.35f, .8f);		//METALBALL
 		CreateMaterial (0.5f, 0.5f, .02f);		//WOOD
+		CreateMaterial (0.3f, 0.3f, .02f);		//DOMINO
 
 
 		plane = new Plane ();
@@ -227,6 +235,7 @@ namespace PhysicsEngine
 									  12, 0.12f);
 		stairs1->Material (GetMaterial (Materials::WOOD));
 		stairs1->AddToScene (this);
+		stairs1->DominoMaterial (GetMaterial (Materials::DOMINO));
 
 		lastPoint = Line (8, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 
@@ -246,6 +255,7 @@ namespace PhysicsEngine
 		Stairs* stairs2 = new Stairs (PxTransform (lastPoint.p, PxQuat (-(PxPi / 2), PxVec3 (0.f, 1.f, 0.f))),
 									  8, 0.12f);
 		stairs2->Material (GetMaterial (Materials::WOOD));
+		stairs2->DominoMaterial (GetMaterial (Materials::DOMINO));
 		stairs2->AddToScene (this);
 
 		lastPoint = stairs2->getEndPoint ();
@@ -326,6 +336,7 @@ namespace PhysicsEngine
 					rot *= PxQuat (45.0f * (PxPi / 180.f), PxVec3 (1.f, 0.f, 0.f));
 					pose = PxTransform (pos, rot);
 					Domino* d = new Domino (pose);
+					d->Material (GetMaterial (Materials::DOMINO));
 					Add (d);
 				}
 				if (x == width - 1) {
@@ -348,6 +359,7 @@ namespace PhysicsEngine
 				angle *= -1;
 			pose.q *= PxQuat (angle, PxVec3 (1.f, 0.f, 0.f));
 			Domino* d = new Domino (pose);
+			d->Material (GetMaterial (Materials::DOMINO));
 			d->Color (colour);
 			dominoes.push_back (d);
 			Add (d);
@@ -365,6 +377,7 @@ namespace PhysicsEngine
 			pose.p += ((i + 1) * spacing) * direction;
 			pose.q *= PxQuat ((((rotationAngle * 2) + (90.f * dir.x)) * (PxPi / 180)), PxVec3 (1.f, 0.f, 0.f));
 			Domino* d = new Domino (pose);
+			d->Material (GetMaterial (Materials::DOMINO));
 			d->Color (colour);
 			dominoes.push_back (d);
 			Add (d);

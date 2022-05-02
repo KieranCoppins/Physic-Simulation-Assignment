@@ -99,7 +99,8 @@ namespace PhysicsEngine
 		ICE,
 		METAL,
 		METALBALL,
-		WOOD
+		WOOD,
+		DOMINO
 	};
 
 	template<class T>
