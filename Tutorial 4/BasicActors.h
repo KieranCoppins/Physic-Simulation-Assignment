@@ -160,7 +160,7 @@ namespace PhysicsEngine
 		PxReal stairWidth;
 
 	public:
-		Stairs (const PxTransform& pose = PxTransform (PxIdentity), PxU32 steps = 3, PxReal stepHeight = .12f);
+		Stairs (const PxTransform& pose = PxTransform (PxIdentity), PxU32 steps = 3, PxReal stepHeight = .12f, PxVec3 direction = PxVec3(1.f, 0.f, 0.f));
 
 		PxReal getHeight ();
 		PxTransform getEndPoint ();

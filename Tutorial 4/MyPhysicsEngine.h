@@ -87,8 +87,6 @@ namespace PhysicsEngine
 		T* ShootObject (PxVec3 forwardVector, PxVec3 pos, PxReal force, PxMaterial* mat = GetMaterial());
 
 	private:
-		void Spiral (PxReal distance, const int numTiles, PxTransform &pose);
-
 		PxTransform DrawBox (int width, int height, PxReal spacing, PxTransform& center, bool fill = false);
 		PxTransform Line (int length, PxVec3& direction, PxReal spacing, PxTransform& start, PxVec3& colour = PxVec3 (1.f, 1.f, 1.f));
 		PxTransform DrawBend (int length, PxTransform& start, PxReal spacing, PxVec3 dir = PxVec3(1.f, 0.f, 0.f), PxReal degrees = 90.f, PxVec3& colour = PxVec3 (1.f, 1.f, 1.f));

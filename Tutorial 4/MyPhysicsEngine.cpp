@@ -180,6 +180,16 @@ namespace PhysicsEngine
 		platform2->Color (PxVec3 (.0f, .0f, .0f));
 		Add (platform2);
 
+		Platform* platform3 = new Platform (PxTransform (PxVec3 (20.f, 0.f, -20.f), PxQuat (PxIdentity)), PxVec3 (10.f, 0.1f, 10.f));
+		platform3->Material (GetMaterial (Materials::WOOD));
+		platform3->Color (PxVec3 (.0f, .0f, .0f));
+		Add (platform3);
+
+		Platform* platform4 = new Platform (PxTransform (PxVec3 (0.f, 0.f, -20.f), PxQuat (PxIdentity)), PxVec3 (10.f, 0.1f, 10.f));
+		platform4->Material (GetMaterial (Materials::ICE));
+		platform4->Color (PxVec3 (.0f, .0f, .0f));
+		Add (platform4);
+
 		PxReal dominoSpacing = .5f;
 
 		//Creates a see saw
@@ -198,70 +208,117 @@ namespace PhysicsEngine
 		newtonCradle->SetMaterial (GetMaterial (Materials::METALBALL));
 		newtonCradle->AddToScene (this);
 
-		PxTransform lastPoint = Line (50, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
+		PxTransform lastPoint = Line (10, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, start, PxVec3 (1.f, 0.f, 0.f));
 		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = Line (20, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = Line (5, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3(0.f, 0.f, 1.f), - 90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = Line (20, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = Line (15, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = Line (20, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
-		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = Line (30, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = Line (20, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		//lastPoint = DrawBend (20, lastPoint, dominoSpacing * 0.6f, PxVec3 (1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		//lastPoint = Line (30, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 
-		stairs = new Stairs (PxTransform (PxVec3(lastPoint.p.x, lastPoint.p.y, lastPoint.p.z - dominoSpacing / 2.f), PxQuat(PxPi/2, PxVec3(0.f, 1.f, 0.f))),
+		stairs = new Stairs (PxTransform (PxVec3(lastPoint.p.x + dominoSpacing / 2.f, lastPoint.p.y, lastPoint.p.z), PxQuat(0.f * (PxPi/180.f), PxVec3 (0.f, 1.f, 0.f))),
 							 12, 0.12f);
 		stairs->Material (GetMaterial (Materials::WOOD));
 		stairs->AddToScene (this);
 		lastPoint = stairs->getEndPoint ();
-		Platform* bridge = new Platform (PxTransform (PxVec3 (lastPoint.p.x, lastPoint.p.y - 0.24f, lastPoint.p.z - 4.f - 0.12)),
+		Platform* bridge = new Platform (PxTransform (PxVec3 (lastPoint.p.x + 4.f + 0.12f, lastPoint.p.y - 0.24f, lastPoint.p.z), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))),
 										 PxVec3 (stairs->getStairWidth () / 2.f, 0.12f / 2.f, 4.f));
 		bridge->Material (GetMaterial (Materials::WOOD));
 		Add (bridge);
 
 
-		cloth = new Cloth (PxTransform (PxVec3 (lastPoint.p.x, lastPoint.p.y - 0.30f, lastPoint.p.z - 2.f), PxQuat(PxPi/2, PxVec3(0.f, 1.f, 0.f))),
+		cloth = new Cloth (PxTransform (PxVec3 (lastPoint.p.x + 2.f, lastPoint.p.y - 0.30f, lastPoint.p.z), PxQuat(0.f, PxVec3(0.f, 1.f, 0.f))),
 						   PxVec2 (5.f, 1.2f), 
 						   20, 20);
 		((PxCloth*) cloth->Get ())->setSolverFrequency (120.f);
 		((PxCloth*) cloth->Get ())->setFrictionCoefficient (.25f);
 		Add (cloth);
 
-		lastPoint = Line (16, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = Line (16, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 
-		lastPoint.p = PxVec3 (lastPoint.p.x, lastPoint.p.y - (13 * 0.12f), lastPoint.p.z - (12 * 0.24f));
+		lastPoint.p = PxVec3 (lastPoint.p.x + (12 * 0.24f), lastPoint.p.y - (13 * 0.12f), lastPoint.p.z);
 
-		Stairs* stairs1 = new Stairs (PxTransform (lastPoint.p, PxQuat (-(PxPi / 2), PxVec3 (0.f, 1.f, 0.f))),
+		Stairs* stairs1 = new Stairs (PxTransform (lastPoint.p, PxQuat (180.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))),
 									  12, 0.12f);
 		stairs1->Material (GetMaterial (Materials::WOOD));
 		stairs1->AddToScene (this);
 		stairs1->DominoMaterial (GetMaterial (Materials::DOMINO));
 
-		lastPoint = Line (8, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint.p.y += 0.12f;
+
+		lastPoint = Line (8, PxVec3 (1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 
 
-		SpinningBlade* sBlade = new SpinningBlade (PxTransform (lastPoint.p + PxVec3 (2.5f, .1f, 0.f)), 8, PxVec3(0.2f, 0.01f, 0.6f), 30.f);
+		SpinningBlade* sBlade = new SpinningBlade (PxTransform (lastPoint.p + PxVec3 (0.f, .1f, 2.5f)), 8, PxVec3(0.2f, 0.01f, 0.6f), 30.f);
 		sBlade->Material (GetMaterial (Materials::METAL));
 		sBlade->DriveVelocity (2.f);
 		sBlade->AddToScene (this);
 
-		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
 		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = Line (16, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
 		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, 1.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint = Line (8, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
-		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
-		lastPoint.p.z += dominoSpacing / 2.f;
-		Stairs* stairs2 = new Stairs (PxTransform (lastPoint.p, PxQuat (-(PxPi / 2), PxVec3 (0.f, 1.f, 0.f))),
+		lastPoint = Line (16, PxVec3 (-1.f, 0.f, 0.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = Line (8, PxVec3 (0.f, 0.f, -1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+		lastPoint.p.y += 0.12f;
+		lastPoint = DrawBend (10, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, -1.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint.p.x -= dominoSpacing / 2.f;
+		lastPoint.p.y -= 0.24f;
+		Stairs* stairs2 = new Stairs (PxTransform (lastPoint.p, PxQuat (180.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))),
 									  8, 0.12f);
 		stairs2->Material (GetMaterial (Materials::WOOD));
 		stairs2->DominoMaterial (GetMaterial (Materials::DOMINO));
 		stairs2->AddToScene (this);
 
 		lastPoint = stairs2->getEndPoint ();
+
 		lastPoint.p.y -= 8 * 0.12f;
 
-		lastPoint.p.z += 1.f;
+		lastPoint.p.x -= .5f;
+
+
+		//Draws a spiral out of bends
+		PxTransform spiralStart = lastPoint;
+		spiralStart.p.z -= .1f;
+		spiralStart.p.y += .12f;
+
+		PxVec3 direction = PxVec3 (-1.f, 0.f, 0.f);
+		for (int i = 20; i > 0; i--) {
+			spiralStart = DrawBend (5 + i, spiralStart, dominoSpacing * 0.6f, direction, -90.f, PxVec3 (0.f, 1.f, 0.f));
+			direction = PxQuat (-(PxPi / 2), PxVec3 (0.f, 1.f, 0.f)).rotate (direction);
+		}
+
+		lastPoint.p.z += .1f;
+
+
+
+		lastPoint = DrawBend (5, lastPoint, dominoSpacing * 0.6f, PxVec3 (-1.f, 0.f, 0.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = DrawBend (5, lastPoint, dominoSpacing * 0.6f, PxVec3 (0.f, 0.f, 1.f), 90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = DrawBend (5, lastPoint, dominoSpacing * 0.6f, PxVec3 (1.f, 0.f, 0.f), -90.f, PxVec3 (0.f, 1.f, 0.f));
+		lastPoint = Line (8, PxVec3 (0.f, 0.f, 1.f), dominoSpacing, lastPoint, PxVec3 (1.f, 0.f, 0.f));
+
+		lastPoint.p.z += dominoSpacing / 2.f;
+		lastPoint.p.y -= 0.12f;
+
+		Stairs* stairs3 = new Stairs (PxTransform (lastPoint.p, PxQuat (-90.f * (PxPi / 180.f), PxVec3 (0.f, 1.f, 0.f))),
+									  18, 0.12f, PxVec3(0.f, 0.f, 1.f));
+		stairs3->Material (GetMaterial (Materials::WOOD));
+		stairs3->DominoMaterial (GetMaterial (Materials::DOMINO));
+		stairs3->AddToScene (this);
+
+		lastPoint = stairs3->getEndPoint ();
+		lastPoint.p.y -= 18 * 0.12f;
+
+
+		SpinningBlade* sBlade2 = new SpinningBlade (PxTransform (lastPoint.p + PxVec3 (0.f, .1f, 1.6f)), 8, PxVec3 (0.2f, 0.01f, 0.6f), 60.f);
+		sBlade2->Material (GetMaterial (Materials::METAL));
+		sBlade2->DriveVelocity (10.f);
+		sBlade2->AddToScene (this);
+
+
+
 
 		//Creates a seesaw
 		/*
@@ -306,15 +363,6 @@ namespace PhysicsEngine
 
 	void MyScene::ExampleKeyPressHandler () {
 
-	}
-
-	void MyScene::Spiral (PxReal distance, const int numTiles, PxTransform& pose)
-	{
-		for (int i = 0; i < numTiles; i++) {
-			PxTransform newPose = pose;
-
-			Domino* d = new Domino ();
-		}
 	}
 	/// <summary>
 	/// Creates a box of dominoes of width and height and out puts the ending position of the dominoes - VERY LAGGY

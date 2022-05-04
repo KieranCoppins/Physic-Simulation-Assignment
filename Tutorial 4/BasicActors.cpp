@@ -355,7 +355,7 @@ namespace PhysicsEngine
 	}
 
 
-	Stairs::Stairs (const PxTransform& pose, PxU32 steps, PxReal stepHeight) : StaticActor(pose)
+	Stairs::Stairs (const PxTransform& pose, PxU32 steps, PxReal stepHeight, PxVec3 direction) : StaticActor(pose)
 	{
 		///
 		/// UK Building regulations state:
@@ -373,7 +373,10 @@ namespace PhysicsEngine
 		for (int i = 0; i < steps; i++) {
 			CreateShape (PxBoxGeometry (stepDepth / 2.f, (stepHeight)/2.f, stepWidth / 2.f));
 			GetShape (i)->setLocalPose (PxTransform (PxVec3 (stepDepth * i, stepHeight * i, 0.f)));
-			Domino* d = new Domino (PxTransform (pose.p + pose.q.rotate(PxVec3(stepDepth * i, stepHeight * i + 0.24f, 0.f)), PxQuat (90.f * (PxPi / 180.f), PxVec3 (0.f, 0.f, 1.f))));
+			PxQuat rot = PxQuat (90.f * (PxPi / 180.f), PxVec3(0.f, 0.f, 1.f));
+			if (direction.z == 0)
+				rot *= PxQuat(90.f * (PxPi / 180.f), PxVec3(1.f, 0.f, 0.f));
+			Domino* d = new Domino (PxTransform (pose.p + pose.q.rotate(PxVec3(stepDepth * i, stepHeight * i + 0.24f, 0.f)), rot));
 			d->Color (PxVec3 (0.f, 0.f, 1.f));
 			dominos.push_back (d);
 		}
