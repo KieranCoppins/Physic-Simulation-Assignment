@@ -13,4 +13,6 @@ Other features include:
  - Particle system elements have a billboard effect that follow the cameras position. Saves resources on rendering.
  - Joints: A mix of distance and revolute joints are used in this demo.
 
+Video Demo: https://youtu.be/xuHvUiZ74KU
+
 ## Grade: [Not released]
