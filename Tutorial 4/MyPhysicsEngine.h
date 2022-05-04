@@ -53,6 +53,8 @@ namespace PhysicsEngine
 
 		Stairs* stairs;
 		Box* trigger;
+
+		PxParticleSystem* ps;
 		
 	public:
 		//specify your custom filter shader here
@@ -85,6 +87,13 @@ namespace PhysicsEngine
 		/// <returns></returns>
 		template <class T>
 		T* ShootObject (PxVec3 forwardVector, PxVec3 pos, PxReal force, PxMaterial* mat = GetMaterial());
+
+		PxParticleSystem* getParticleSystem ();
+
+		void SpawnParticles ();
+
+
+		bool Over = false;
 
 	private:
 		PxTransform DrawBox (int width, int height, PxReal spacing, PxTransform& center, bool fill = false);

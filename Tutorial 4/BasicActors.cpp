@@ -331,7 +331,7 @@ namespace PhysicsEngine
 	{
 		for (int i = 0; i < balls.size (); i++) {
 			delete joints[i];
-			delete balls[i];
+			delete balls[i];	
 		}
 	}
 
@@ -368,6 +368,7 @@ namespace PhysicsEngine
 		///		- Step Going (StepDepth) = StepHeight * 2
 		///		- Step Width = step rise * 4
 		PxReal stepWidth = stepHeight * 4.f;
+		//making the depth 2 times the height means the pitch of the stairs stay at ~26 degrees
 		PxReal stepDepth = stepHeight * 2.f;
 
 		for (int i = 0; i < steps; i++) {
@@ -455,5 +456,6 @@ namespace PhysicsEngine
 	{
 		joint->DriveVelocity (velocity * -1.f);
 	}
+
 
 }

@@ -21,7 +21,7 @@ namespace VisualDebugger
 		void Start(const PxVec3& cameraEye, const PxVec3& cameraDir);
 
 		///Render actors
-		void Render(PxActor** actors, const PxU32 numActors);
+		void Render(PxActor** actors, const PxU32 numActors, PxVec3 camera, PxVec3 cameraPos);
 
 		///Render debug information
 		void Render(const PxRenderBuffer& data, PxReal line_width=1.f);

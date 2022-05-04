@@ -19,7 +19,8 @@ namespace VisualDebugger
 	{
 		EMPTY = 0,
 		HELP = 1,
-		PAUSE = 2
+		PAUSE = 2,
+		FINISH = 3
 	};
 
 	//function declarations
@@ -109,11 +110,20 @@ namespace VisualDebugger
 		hud.AddLine(HELP, "");
 		hud.AddLine(HELP, " Force (applied to the selected actor)");
 		hud.AddLine(HELP, "    I,K,J,L,U,M - forward,backward,left,right,up,down");
+		hud.AddLine (HELP,"    R - Shoot ball");
 		//add a pause screen
 		hud.AddLine(PAUSE, "");
 		hud.AddLine(PAUSE, "");
 		hud.AddLine(PAUSE, "");
 		hud.AddLine(PAUSE, "   Simulation paused. Press F10 to continue.");
+		//Add a finish screen
+		// //add a pause screen
+		hud.AddLine (FINISH, "");
+		hud.AddLine (FINISH, "");
+		hud.AddLine (FINISH, "");
+		hud.AddLine (FINISH, "   Domino Show over! I hope you enjoyed");
+		hud.AddLine (FINISH, "");
+		hud.AddLine (FINISH, "   Created by Kieran Coppins");
 		//set font size for all screens
 		hud.FontSize(0.018f);
 		//set font color for all screens
@@ -144,16 +154,22 @@ namespace VisualDebugger
 		{
 			std::vector<PxActor*> actors = scene->GetAllActors();
 			if (actors.size())
-				Renderer::Render(&actors[0], (PxU32)actors.size());
+				Renderer::Render(&actors[0], (PxU32)actors.size(), camera->getDir(), camera->getEye());
 		}
 
 		//adjust the HUD state
 		if (hud_show)
 		{
-			if (scene->Pause())
-				hud.ActiveScreen(PAUSE);
-			else
-				hud.ActiveScreen(HELP);
+			if (scene->Over) {
+				hud.ActiveScreen (FINISH);
+			}
+			else {
+				if (scene->Pause ())
+					hud.ActiveScreen (PAUSE);
+				else
+					hud.ActiveScreen (HELP);
+
+			}
 		}
 		else
 			hud.ActiveScreen(EMPTY);

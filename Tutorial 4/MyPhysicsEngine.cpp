@@ -4,6 +4,9 @@ namespace PhysicsEngine
 {
 	using namespace std;
 
+	bool over = false;
+	bool particles = false;
+
 	//a list of colours: Circus Palette
 	static const PxVec3 color_palette[] = { PxVec3 (46.f / 255.f,9.f / 255.f,39.f / 255.f),PxVec3 (217.f / 255.f,0.f / 255.f,0.f / 255.f),
 		PxVec3 (255.f / 255.f,45.f / 255.f,0.f / 255.f),PxVec3 (255.f / 255.f,140.f / 255.f,54.f / 255.f),PxVec3 (4.f / 255.f,117.f / 255.f,111.f / 255.f) };
@@ -66,9 +69,14 @@ namespace PhysicsEngine
 					//Check if the geometry is of a box type - chances are this is the the domino
 					if (pairs[i].otherShape->getGeometryType () == PxGeometryType::eBOX) {
 						//If we have triggered a domino, display the domino show is over
-						cout << "Domino show is over!" << endl;
+						if (!over) {
+							cout << "Domino show is over!" << endl;
 
-						//TODO PUT SOME KIND OF VISUAL THAT THE DOMINO SHOW IS OVER
+							//TODO PUT SOME KIND OF VISUAL THAT THE DOMINO SHOW IS OVER
+
+							over = true;
+						}
+
 					}
 					cerr << "onTrigger::eNOTIFY_TOUCH_FOUND" << endl;
 					trigger = true;
@@ -317,44 +325,27 @@ namespace PhysicsEngine
 		sBlade2->DriveVelocity (10.f);
 		sBlade2->AddToScene (this);
 
-
-
-
-		//Creates a seesaw
-		/*
-		Balancer* seesaw = new Balancer (PxTransform (PxVec3 (lastPoint.p), PxQuat(0.0f * (PxPi/180), PxVec3 (0.f, 1.f, 0.f))), PxVec3 (.5f, .05f, 1.f), 1.f);
-		seesaw->Material (GetMaterial (Materials::WOOD));
-		seesaw->AddToScene (this);
-		*/
-
 		//lastPoint.p.z += .8f;
 		lastPoint.p.y += .4f;
-		/*
-		Box* box = new Box (PxTransform (PxVec3 (lastPoint.p), PxQuat (0.0f * (PxPi / 180), PxVec3 (0.f, 1.f, 0.f))),
-							PxVec3 (.2f, .2f, .2f), 400.f);
-		box->Material (GetMaterial (Materials::WOOD));
-		Add (box);
-		*/
+		lastPoint.p.x += 10.f;
+		lastPoint.p.z += 10.f;
 
 		trigger = new Box (PxTransform (PxVec3 (lastPoint.p)),
-								PxVec3 (.5f, .5f, .5f));
+						   PxVec3 (.5f, .5f, 10.f));
 		trigger->SetTrigger (true);
 		trigger->Get ()->setActorFlag (PxActorFlag::eDISABLE_GRAVITY, true);
 		Add (trigger);
-
-
-		//ball = new Sphere (PxTransform (PxVec3 (5.f, 10.f, -4.f), PxQuat (PxIdentity)), 1.f, 100.f);
-		//Add (ball);
-
-		//box = new Box (PxTransform (PxVec3 (5.f, 10.f, 5.f)), PxVec3 (2.f, 2.f, 2.f));
-		//Add (box);
 
 		//setting custom cloth parameters
 		//((PxCloth*)cloth->Get())->setStretchConfig(PxClothFabricPhaseType::eBENDING, PxClothStretchConfig(1.f));
 	}
 
 	void MyScene::CustomUpdate () {
-
+		if (over && !particles) {
+			SpawnParticles ();
+			particles = true;
+			Over = true;
+		}
 	}
 
 	void MyScene::ExampleKeyReleaseHandler (PxVec3 dir, PxVec3 pos) {
@@ -363,6 +354,54 @@ namespace PhysicsEngine
 
 	void MyScene::ExampleKeyPressHandler () {
 
+	}
+	PxParticleSystem* MyScene::getParticleSystem ()
+	{
+		return ps;
+	}
+	void MyScene::SpawnParticles ()
+	{
+		/// ---------------------------------
+		/// DEPRECIATED PARTICLE SYSTEM
+		/// ---------------------------------
+		ps = GetPhysics ()->createParticleSystem (2000, false);
+		ps->setActorFlag (PxActorFlag::eVISUALIZATION, true);
+		ps->setParticleBaseFlag (PxParticleBaseFlag::eENABLED, true);
+		ps->setParticleBaseFlag (PxParticleBaseFlag::eCOLLISION_WITH_DYNAMIC_ACTORS, true);
+		ps->setParticleBaseFlag (PxParticleBaseFlag::eGPU, true);
+		ps->setParticleMass (.07f);
+		ps->setMaxMotionDistance (.6f);
+		Get()->addActor (*ps);
+
+		const int numParticles = 2000;
+		PxU32 particleIndicies[numParticles];
+		PxVec3 particlePositions[numParticles];
+		for (int i = 0; i < numParticles; i++) {
+			particleIndicies[i] = i;
+			particlePositions[i] = PxVec3 (10.f, 10.f, -10.f);
+		}
+
+		PxParticleCreationData data;
+		data.numParticles = numParticles;
+		data.indexBuffer = PxStrideIterator<const PxU32> (particleIndicies);
+		data.positionBuffer = PxStrideIterator<const PxVec3> (particlePositions);
+		ps->createParticles (data);
+
+		// Scatter particles
+		PxVec3 forces[numParticles];
+		PxReal particleForce = 50.f;
+		for (int i = 0; i < numParticles; i++) {
+			float randomX = (rand () % 100 - 50) / 100.f;
+			float randomY = (rand () % 100) / 100.f;
+			float randomZ = (rand () % 100 - 50) / 100.f;
+			float randomForce = (rand () % 100) / 100.f;
+			forces[i] = PxVec3 (randomX, randomY, randomZ).getNormalized () * (particleForce * randomForce);
+		}
+
+		ps->addForces (numParticles,
+					   PxStrideIterator<const PxU32> (particleIndicies),
+					   PxStrideIterator<const PxVec3> (forces),
+					   PxForceMode::eFORCE);
 	}
 	/// <summary>
 	/// Creates a box of dominoes of width and height and out puts the ending position of the dominoes - VERY LAGGY

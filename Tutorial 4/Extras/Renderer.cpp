@@ -15,9 +15,27 @@ namespace VisualDebugger
 		bool show_shadows = true;
 
 		static float gPlaneData[] = {
-			-1.f, 0.f, -1.f, 0.f, 1.f, 0.f, -1.f, 0.f, 1.f, 0.f, 1.f, 0.f,
-			1.f, 0.f, 1.f, 0.f, 1.f, 0.f, -1.f, 0.f, -1.f, 0.f, 1.f, 0.f,
-			1.f, 0.f, 1.f, 0.f, 1.f, 0.f, 1.f, 0.f, -1.f, 0.f, 1.f, 0.f
+			-1.f, 0.f, -1.f, 0.f, 1.f, 0.f, 
+			-1.f, 0.f, 1.f, 0.f, 1.f, 0.f,
+			1.f, 0.f, 1.f, 0.f, 1.f, 0.f,
+			-1.f, 0.f, -1.f, 0.f, 1.f, 0.f,
+			1.f, 0.f, 1.f, 0.f, 1.f, 0.f, 
+			1.f, 0.f, -1.f, 0.f, 1.f, 0.f
+		};
+
+		static float gBillboardPlaneData[] = {
+			0.f, -1.f, -1.f, 
+			0.f, 1.f, 0.f, 
+			0.f, -1.f, 1.f, 
+			0.f, 1.f, 0.f,
+			0.f, 1.f, 1.f,
+			0.f, 1.f, 0.f,
+			0.f, -1.f, -1.f,
+			0.f, 1.f, 0.f,
+			0.f, 1.f, 1.f,
+			0.f, 1.f, 0.f,
+			0.f, 1.f, -1.f,
+			0.f, 1.f, 0.f,
 		};
 
 		void DrawPlane()
@@ -286,89 +304,140 @@ namespace VisualDebugger
 			background_color = color;
 		}
 
-		void Render(PxActor** actors, const PxU32 numActors)
+		void Render (PxActor** actors, const PxU32 numActors, PxVec3 camera, PxVec3 cameraPos)
 		{
 			PxVec3 shadow_color = default_color * 0.9;
 			for (PxU32 i = 0; i < numActors; i++) {
-#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
-				if (actors[i]->isCloth()) {
-#else
-				if (actors[i]->is<PxCloth>()) {
-#endif
-					RenderCloth((PxCloth*)actors[i]);
+			#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
+				if (actors[i]->isCloth ()) {
+				#else
+				if (actors[i]->is<PxCloth> ()) {
+				#endif
+					RenderCloth ((PxCloth*) actors[i]);
 				}
-#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
-				else if (actors[i]->isRigidActor()) {
-#else
-				else if (actors[i]->is<PxRigidActor>()) {
-#endif
-					PxRigidActor* rigid_actor = (PxRigidActor*)actors[i];
-					std::vector<PxShape*> shapes(rigid_actor->getNbShapes());
-					rigid_actor->getShapes((PxShape**)&shapes.front(), (PxU32)shapes.size());
+			#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
+				else if (actors[i]->isRigidActor ()) {
+				#else
+				else if (actors[i]->is<PxRigidActor> ()) {
+				#endif
+					PxRigidActor* rigid_actor = (PxRigidActor*) actors[i];
+					std::vector<PxShape*> shapes (rigid_actor->getNbShapes ());
+					rigid_actor->getShapes ((PxShape**) &shapes.front (), (PxU32) shapes.size ());
 
 
-					for (PxU32 j = 0; j < shapes.size(); j++)
+					for (PxU32 j = 0; j < shapes.size (); j++)
 					{
 						const PxShape* shape = shapes[j];
 						//If the shape is a trigger, dont render it
 						if (shape->getFlags ().isSet (PxShapeFlag::eTRIGGER_SHAPE)) {
 							continue;
 						}
-						PxTransform pose = PxShapeExt::getGlobalPose(*shape, *shape->getActor());
-						PxGeometryHolder h = shape->getGeometry();
+						PxTransform pose = PxShapeExt::getGlobalPose (*shape, *shape->getActor ());
+						PxGeometryHolder h = shape->getGeometry ();
 						//move the plane slightly down to avoid visual artefacts
-						if (h.getType() == PxGeometryType::ePLANE)
+						if (h.getType () == PxGeometryType::ePLANE)
 						{
-							pose.q *= PxQuat(PxHalfPi, PxVec3(0.f, 0.f, 1.f));
-							pose.p += PxVec3(0, -0.01, 0);
+							pose.q *= PxQuat (PxHalfPi, PxVec3 (0.f, 0.f, 1.f));
+							pose.p += PxVec3 (0, -0.01, 0);
 						}
 
-						PxMat44 shapePose(pose);
+						PxMat44 shapePose (pose);
 						// render object
-						glPushMatrix();
-						glMultMatrixf((float*)&shapePose);
+						glPushMatrix ();
+						glMultMatrixf ((float*) &shapePose);
 
 						PxVec3 shape_color = default_color;
 
 						if (shape->userData)
 						{
-							shape_color = *(((UserData*)shape->userData)->color);
-							if (h.getType() == PxGeometryType::ePLANE)
+							shape_color = *(((UserData*) shape->userData)->color);
+							if (h.getType () == PxGeometryType::ePLANE)
 							{
 								shadow_color = shape_color * 0.9;
 							}
 						}
 
-						if (h.getType() == PxGeometryType::ePLANE)
-							glDisable(GL_LIGHTING);
+						if (h.getType () == PxGeometryType::ePLANE)
+							glDisable (GL_LIGHTING);
 
-						glColor4f(shape_color.x, shape_color.y, shape_color.z, 1.f);
+						glColor4f (shape_color.x, shape_color.y, shape_color.z, 1.f);
 
-						RenderGeometry(h);
+						RenderGeometry (h);
 
-						if (h.getType() == PxGeometryType::ePLANE)
-							glEnable(GL_LIGHTING);
+						if (h.getType () == PxGeometryType::ePLANE)
+							glEnable (GL_LIGHTING);
 
-						glPopMatrix();
+						glPopMatrix ();
 
-						if (show_shadows && (h.getType() != PxGeometryType::ePLANE))
+						if (show_shadows && (h.getType () != PxGeometryType::ePLANE))
 						{
-							const PxVec3 shadowDir(-0.7071067f, -0.7071067f, -0.7071067f);
+							const PxVec3 shadowDir (-0.7071067f, -0.7071067f, -0.7071067f);
 							const PxReal shadowMat[] = { 1,0,0,0, -shadowDir.x / shadowDir.y,0,-shadowDir.z / shadowDir.y,0, 0,0,1,0, 0,0,0,1 };
-							glPushMatrix();
-							glMultMatrixf(shadowMat);
-							glMultMatrixf((float*)&shapePose);
-							glDisable(GL_LIGHTING);
-							glColor4f(shadow_color.x, shadow_color.y, shadow_color.z, 1.f);
-							RenderGeometry(h);
-							glEnable(GL_LIGHTING);
-							glPopMatrix();
+							glPushMatrix ();
+							glMultMatrixf (shadowMat);
+							glMultMatrixf ((float*) &shapePose);
+							glDisable (GL_LIGHTING);
+							glColor4f (shadow_color.x, shadow_color.y, shadow_color.z, 1.f);
+							RenderGeometry (h);
+							glEnable (GL_LIGHTING);
+							glPopMatrix ();
 						}
 					}
 				}
 
+			#if PX_PHYSICS_VERSION < 0x304000 // SDK 3.3
+				else if (actors[i]->isParticleSystem ()) {
+				#else
+				else if (actors[i]->is<PxParticleSystem> ()) {
+				#endif
+					PxParticleSystem* ps = (PxParticleSystem*) actors[i];
+
+					PxParticleReadData* rd = ps->lockParticleReadData ();
+					if (rd) {
+						PxStrideIterator<const PxParticleFlags> flagsIt (rd->flagsBuffer);
+						PxStrideIterator<const PxVec3> positionIt (rd->positionBuffer);
+
+						for (unsigned i = 0; i < rd->validParticleRange; ++i, ++flagsIt, ++positionIt)
+						{
+							if (*flagsIt & PxParticleFlag::eVALID)
+							{
+								// access particle positions
+								const PxVec3& position = *positionIt;
+
+								//Get rotation to face the camera
+								PxVec3 relativePosition = cameraPos - position;
+								PxReal angle = PxVec3(1.f, 0.f, 0.f).dot (relativePosition.getNormalized()) + (90.f * (PxPi/180));
+								PxVec3 axis = PxVec3 (1.f, 0.f, 0.f).cross (relativePosition.getNormalized ());
+								PxQuat rot = PxQuat (-angle, axis.getNormalized ());
+
+
+								//Convert to transform matrix
+								PxMat44 posMatrix = PxTransform (position, rot);
+
+								//Render as planes
+								glPushMatrix ();
+								glMultMatrixf ((float*) &posMatrix);
+								glDisable (GL_LIGHTING);
+								glScalef (.1f, .1f, .1f);
+								glColor4f(153.f/256.f, 227.f / 256.f, 242.f / 256.f, 1.f);
+								glEnableClientState (GL_VERTEX_ARRAY);
+								glEnableClientState (GL_NORMAL_ARRAY);
+								glVertexPointer (3, GL_FLOAT, 2 * 3 * sizeof (float), gBillboardPlaneData);
+								glNormalPointer (GL_FLOAT, 2 * 3 * sizeof (float), gBillboardPlaneData + 3);
+								glDrawArrays (GL_TRIANGLES, 0, 6);
+								glEnable (GL_LIGHTING);
+								glDisableClientState (GL_VERTEX_ARRAY);
+								glDisableClientState (GL_NORMAL_ARRAY);
+								glPopMatrix ();
+							}
+						}
+
+						// return ownership of the buffers back to the SDK
+						rd->unlock ();
+					}
 				}
-				}
+			}
+		}
 
 		void Finish()
 		{

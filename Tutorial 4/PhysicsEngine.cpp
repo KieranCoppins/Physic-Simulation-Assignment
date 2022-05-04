@@ -370,7 +370,7 @@ namespace PhysicsEngine
 			PxActorTypeSelectionFlag::eCLOTH;
 #else
 		physx::PxActorTypeFlags selection_flag = PxActorTypeFlag::eRIGID_DYNAMIC | PxActorTypeFlag::eRIGID_STATIC |
-			PxActorTypeFlag::eCLOTH;
+			PxActorTypeFlag::eCLOTH | PxActorTypeFlag::ePARTICLE_SYSTEM;
 #endif
 		std::vector<PxActor*> actors(px_scene->getNbActors(selection_flag));
 		px_scene->getActors(selection_flag, (PxActor**)&actors.front(), (PxU32)actors.size());
