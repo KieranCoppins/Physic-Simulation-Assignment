@@ -11,5 +11,6 @@ The assignment made us create a dominos simulation as close to real life values 
 Other features include:
  - Shooting Newton's Cradle balls from the camera's position in the direction the camera is looking - Press R.
  - Particle system elements have a billboard effect that follow the cameras position. Saves resources on rendering.
+ - Joints: A mix of distance and revolute joints are used in this demo.
 
 ## Grade: [Not released]
