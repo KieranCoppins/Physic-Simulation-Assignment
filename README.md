@@ -15,4 +15,4 @@ Other features include:
 
 Video Demo: https://youtu.be/xuHvUiZ74KU
 
-## Grade: [Not released]
+## Grade: 1st Class
