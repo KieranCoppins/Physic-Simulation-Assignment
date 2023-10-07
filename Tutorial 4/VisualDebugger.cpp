@@ -3,6 +3,8 @@
 #include "Extras\Camera.h"
 #include "Extras\Renderer.h"
 #include "Extras\HUD.h"
+#include <thread>
+#include <mutex>
 
 namespace VisualDebugger
 {
@@ -47,6 +49,8 @@ namespace VisualDebugger
 	bool key_state[MAX_KEYS];
 	bool hud_show = true;
 	HUD hud;
+
+	bool running = true;
 
 	//Init the debugger
 	void Init(const char *window_name, int width, int height)
@@ -131,32 +135,48 @@ namespace VisualDebugger
 	}
 
 	//Start the main loop
-	void Start()
-	{ 
+	void StartRender ()
+	{
+		auto test = std::thread ([]
+								 {
+									 StartPhysics ();
+								 });
+		test.detach ();
 		glutMainLoop(); 
 	}
 
 	//Render the scene and perform a single simulation step
 	void RenderScene()
 	{
-		//handle pressed keys
-		KeyHold();
 
 		//start rendering
 		Renderer::Start(camera->getEye(), camera->getDir());
+
+
+		// TODO: currently this is cause of our rendering bottleneck. Our physics engine runs at a smooth lovely 60FPS. However,
+		// the renderer can loose frames when theres a lot to simulate by just waiting to be able to lock the read so that it can render
+		// once it has the data, rendering is very quick.
+		// This whole seperation of moving the physics engine to a seperate thread allows for the simulation to run correctly, smoothly and accurately.
+		// It is purely the renderer that is making it look choppy (Using PVD shows the smoothness). 
+		// However, when they both shared a thread, the simulation would be slowed down by the renderer, therefore giving everything this slowmo feel
+		scene->Get ()->lockRead ();
+
+		//handle pressed keys
+		KeyHold ();
 
 		if ((render_mode == DEBUG) || (render_mode == BOTH))
 		{
 			Renderer::Render(scene->Get()->getRenderBuffer());
 		}
-
 		if ((render_mode == NORMAL) || (render_mode == BOTH))
 		{
 			std::vector<PxActor*> actors = scene->GetAllActors();
 			if (actors.size())
 				Renderer::Render(&actors[0], (PxU32)actors.size(), camera->getDir(), camera->getEye());
 		}
+		scene->Get ()->unlockRead ();
 
+		
 		//adjust the HUD state
 		if (hud_show)
 		{
@@ -179,9 +199,26 @@ namespace VisualDebugger
 
 		//finish rendering
 		Renderer::Finish();
+	}
 
-		//perform a single simulation step
-		scene->Update(delta_time);
+	// Runs a fixed time loop at 60 times per second
+	void StartPhysics ()
+	{
+		float dt = 0.016f;
+		using framerate = std::chrono::duration<std::chrono::steady_clock::rep, std::ratio<1, 60>>;
+		auto next = std::chrono::steady_clock::now () + framerate{ 1 };
+		while (running) { 
+			auto startTime = std::chrono::high_resolution_clock::now ();
+
+			//perform a single simulation step
+			scene->Update (dt);
+			while (std::chrono::steady_clock::now () < next);
+			auto endTime = std::chrono::high_resolution_clock::now ();
+
+			// Convert nano seconds to seconds
+			dt = (endTime - startTime).count () / 1000000000.f;
+			next += framerate{ 1 };
+		}
 	}
 
 	//user defined keyboard handlers

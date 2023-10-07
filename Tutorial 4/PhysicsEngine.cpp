@@ -294,11 +294,13 @@ namespace PhysicsEngine
 	{
 		if (pause)
 			return;
+		px_scene->lockWrite ();
 
 		CustomUpdate();
 
 		px_scene->simulate(dt);
-		px_scene->fetchResults(true);
+		px_scene->fetchResults (true);
+		px_scene->unlockWrite ();
 	}
 
 	void Scene::Add(Actor* actor)

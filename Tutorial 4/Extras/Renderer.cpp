@@ -185,10 +185,7 @@ namespace VisualDebugger
 			std::vector<PxVec3> verts(cloth->getNbParticles());
 			std::vector<PxVec3> norms(verts.size(), PxVec3(0.f, 0.f, 0.f));
 
-			//get verts data
-			cloth->lockParticleData();
-
-			PxClothParticleData* particle_data = cloth->lockParticleData();
+			PxClothParticleData* particle_data = cloth->lockParticleData ();
 			if (!particle_data)
 				return;
 			// copy vertex positions

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "VisualDebugger.h"
+#include <thread>
 
 using namespace std;
 
@@ -15,7 +16,7 @@ int main()
 		return 0; 
 	}
 
-	VisualDebugger::Start();
+	VisualDebugger::StartRender ();
 
 	return 0;
 }
